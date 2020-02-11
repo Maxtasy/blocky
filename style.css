@@ -1,0 +1,55 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin:0;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: bisque;
+}
+
+#blocky {
+    background-color: cadetblue;
+    border: 3px solid black;
+}
+
+.game-over-dialogue {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .9);
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-over-dialogue.show {
+    display: flex;
+}
+
+.game-over-message {
+    color: white;
+    font-size: 4rem;
+}
+
+.game-over-dialogue button {
+    font-size: 5rem;
+    padding: .25em .5em;
+    color: black;
+    background-color: white;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+.game-over-dialogue button:hover {
+    color: white;
+    background-color: black;
+    border: 1px solid white;
+}
