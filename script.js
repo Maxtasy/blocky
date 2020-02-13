@@ -8,15 +8,18 @@ const framesPerSecond = 60;
 // Array for all squares
 let squares = [];
 // Numbers of Squares to spawn
-const NUM_SQUARES = 10;
+const NUM_SQUARES = 30;
+const SQ_COLORS = ["#022c7a", "#700460", "#a02c5d", "#ec0f47", 
+                    "#ee6b3b", "#fbbf54", "#abd96d", "#15c286",
+                    "#087353", "#045459", "#262949", "#1a1333", "#000000"];
 
 class Square {
     constructor() {
         this.posX = Math.floor(Math.random() * (560));
         this.posY = Math.floor(Math.random() * (560));
         this.size = 40;
-        this.color = "black";
-        this.hitpoints = 5;
+        this.hitpoints = SQ_COLORS.length;
+        this.color = SQ_COLORS[this.hitpoints - 1];
     }
 
     draw() {
@@ -24,9 +27,11 @@ class Square {
         ctx.fillStyle = this.color;
         ctx.fillRect(this.posX, this.posY, this.size, this.size);
         ctx.closePath();
-        ctx.fillStyle = "white";
         ctx.font = "30px Arial";
-        ctx.fillText(this.hitpoints, this.posX + 10, this.posY + 30); 
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "white";
+        ctx.fillText(this.hitpoints, this.posX + 19, this.posY + 21);
     }
 }
 
@@ -36,8 +41,8 @@ class Ball {
         this.posY = 300;
         this.radius = 20;
         this.color = "#fc4e03";
-        this.dX = 4;
-        this.dY = 3;
+        this.dX = 5;
+        this.dY = 4;
     }
 
     update() {
@@ -79,6 +84,7 @@ class Ball {
                     this.dY *= -1;
                 }
                 squares[i].hitpoints -= 1;
+                squares[i].color = SQ_COLORS[squares[i].hitpoints - 1]
 
                 if (squares[i].hitpoints <= 0) {
                     squares.splice(i, 1);
