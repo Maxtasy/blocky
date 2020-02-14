@@ -12,12 +12,18 @@ const NUM_SQUARES = 30;
 const SQ_COLORS = ["#022c7a", "#700460", "#a02c5d", "#ec0f47", 
                     "#ee6b3b", "#fbbf54", "#abd96d", "#15c286",
                     "#087353", "#045459", "#262949", "#1a1333", "#000000"];
+const blipSound = document.querySelector("#blipSound");
+blipSound.volume = 0.2;
+const destroySound = document.querySelector("#destroySound");
+destroySound.volume = 0.2;
 
 class Square {
     constructor() {
         this.posX = Math.floor(Math.random() * (560));
         this.posY = Math.floor(Math.random() * (560));
         this.size = 40;
+        this.centerX = this.posX + this.size / 2;
+        this.centerY = this.posY + this.size / 2;
         this.hitpoints = SQ_COLORS.length;
         this.color = SQ_COLORS[this.hitpoints - 1];
     }
@@ -51,43 +57,38 @@ class Ball {
     }
 
     collisionWalls() {
-        if (this.posX > 600 - this.radius || this.posX < 20) {
+        if (this.posX > 600 - this.radius || this.posX < this.radius) {
             this.dX *= -1;
         }
 
-        if (this.posY > 600 - this.radius || this.posY < 20) {
+        if (this.posY > 600 - this.radius || this.posY < this.radius) {
             this.dY *= -1;
         }
     }
 
     collisionSquares() {
         for (let i = 0; i < squares.length; i++) {
-            let xDistance = Math.abs(this.posX - squares[i].posX);
-            let yDistance = Math.abs(this.posY - squares[i].posY);
-
-            if (this.posX > squares[i].posX) {
-                xDistance -= 20;
-            } else {
-                xDistance += 20;
-            }
-
-            if (this.posY > squares[i].posY) {
-                yDistance -= 20;
-            } else {
-                yDistance += 20;
-            }
+            let xDistance = Math.abs(this.posX - squares[i].centerX);
+            let yDistance = Math.abs(this.posY - squares[i].centerY);
 
             if (xDistance <= 40 && yDistance <= 40) {
                 if (xDistance > yDistance) {
                     this.dX *= -1;
+                } else if (xDistance < yDistance){
+                    this.dY *= -1;
                 } else {
+                    this.dX *= -1;
                     this.dY *= -1;
                 }
                 squares[i].hitpoints -= 1;
                 squares[i].color = SQ_COLORS[squares[i].hitpoints - 1]
+                blipSound.currentTime = 0;
+                blipSound.play();
 
                 if (squares[i].hitpoints <= 0) {
                     squares.splice(i, 1);
+                    destroySound.currentTime = 0;
+                    destroySound.play();
                     break;
                 }
             }
