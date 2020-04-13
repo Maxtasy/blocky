@@ -1,21 +1,28 @@
 const cvs = document.querySelector("#blocky");
 const ctx = cvs.getContext("2d");
-const gameOverMessage = document.querySelector("#gameOverMessage");
-const gameOverDialogue = document.querySelector("#gameOverDialogue");
-const restartButton = document.querySelector("#restartButton");
+const overlayText = document.querySelector(".overlay-text");
+const overlayTextMessage = document.querySelector(".overlay-text-message");
+const startButton = document.querySelector("#start-button");
+
+const blipSound = document.querySelector("#blipSound");
+blipSound.volume = 0.2;
+
+const destroySound = document.querySelector("#destroySound");
+destroySound.volume = 0.2;
+
 // Game update rate
 const framesPerSecond = 60;
+
 // Array for all squares
 let squares = [];
+
 // Numbers of Squares to spawn
-const NUM_SQUARES = 30;
+const NUM_SQUARES = 10;
+
+// Color spectrum of Squares
 const SQ_COLORS = ["#022c7a", "#700460", "#a02c5d", "#ec0f47", 
                     "#ee6b3b", "#fbbf54", "#abd96d", "#15c286",
                     "#087353", "#045459", "#262949", "#1a1333", "#000000"];
-const blipSound = document.querySelector("#blipSound");
-blipSound.volume = 0.2;
-const destroySound = document.querySelector("#destroySound");
-destroySound.volume = 0.2;
 
 class Square {
     constructor() {
@@ -46,7 +53,7 @@ class Ball {
         this.posX = 300;
         this.posY = 300;
         this.radius = 20;
-        this.color = "#fc4e03";
+        this.color = "#962D3E";
         this.dX = 5;
         this.dY = 4;
     }
@@ -57,11 +64,11 @@ class Ball {
     }
 
     collisionWalls() {
-        if (this.posX > 600 - this.radius || this.posX < this.radius) {
+        if (this.posX >= 600 - this.radius || this.posX < this.radius) {
             this.dX *= -1;
         }
 
-        if (this.posY > 600 - this.radius || this.posY < this.radius) {
+        if (this.posY >= 600 - this.radius || this.posY < this.radius) {
             this.dY *= -1;
         }
     }
@@ -110,7 +117,9 @@ function runGame() {
     b.collisionWalls();
     b.collisionSquares();
     if (squares.length < 1) {
-        gameOverDialogue.classList.add("show");
+        overlayTextMessage.textContent = "Game Over!";
+        startButton.textContent = "New Game";
+        overlayText.classList.add("show");
         clearInterval(gameLoop);
     }
     for (let i = 0; i < squares.length; i++) {
@@ -120,7 +129,7 @@ function runGame() {
 }
 
 function newGame() {
-    gameOverDialogue.classList.remove("show");
+    overlayText.classList.remove("show");
     squares = [];
 
     for (let i = 0; i < NUM_SQUARES; i++) {
@@ -128,13 +137,12 @@ function newGame() {
     }
     
     gameLoop = setInterval(runGame, 1000 / framesPerSecond);
-}
 
-restartButton.addEventListener("click", newGame);
+    // Run Game
+    runGame();
+}
 
 // Create Ball
 const b = new Ball();
 
-// Run Game
-newGame();
-runGame();
+startButton.addEventListener("click", newGame);
